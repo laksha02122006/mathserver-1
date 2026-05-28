@@ -1,5 +1,7 @@
 # Ex.05 Design a Website for Server Side Processing
-# Date:
+# Date: 28/05/2026
+# Name: V.B.Laksha
+# Reg.no: 212224220051
 # AIM:
 To design a website to calculate the power of a lamp filament in an incandescent bulb in the server side.
 
@@ -35,132 +37,132 @@ Publish the website in the given URL.
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Power Calculator</title>
-    <style type="text/css">
-        body {
-            background-color: #bdd1d3;
-            background-repeat: no-repeat;
-            background-position: center;
-            background-size: cover;
-            text-align: center;
-            font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
-            color:brown;
+    <title>GST Bill Calculator</title>
+
+    <style>
+        body{
+            font-family: Arial, sans-serif;
+            background: linear-gradient(to right, #74ebd5, #ACB6E5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
         }
-        h1 {
-            font-size: 2.5em;
+
+        .container{
+            background-color: white;
+            padding: 30px;
+            width: 400px;
+            border-radius: 15px;
+            box-shadow: 0px 0px 15px gray;
+            text-align: center;
+        }
+
+        h1{
+            color: darkblue;
             margin-bottom: 20px;
         }
-        .container {
-            background-color: #c9c4b7;
-            border-radius: 100%;
-            padding: 75px;
-            box-shadow:#1fe374;
-            display:inline-block;
-            margin-top: 100px;
-        }
-        label {
-            font-size: 150%;
-            display:flow-root;
-            margin: 15px 0 5px;
-            
-        }
-        input[type="text"] {
-            width: calc(75% - 24px);
+
+        input{
+            width: 90%;
             padding: 10px;
-            border-radius: 12px;
-            border: 1px solid #051313;
-            margin-bottom: 15px;
-            font-size: 1em;
+            margin: 10px 0;
+            border-radius: 5px;
+            border: 1px solid gray;
+            font-size: 16px;
         }
-        input[type="submit"] {
-            background-color: #1fe374;
-            color: rgb(211, 241, 247);
+
+        button{
+            background-color: green;
+            color: white;
+            padding: 10px 20px;
             border: none;
-            border-radius: 10px;
-            padding: 10px 21px;
-            font-size: 1em;
-            cursor:pointer;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
         }
-        button:hover {
-            background-color: #d588b2;
+
+        button:hover{
+            background-color: darkgreen;
         }
-        p {
-            font-size: 1.2em;
+
+        .result{
             margin-top: 20px;
+            background-color: #f2f2f2;
+            padding: 15px;
+            border-radius: 10px;
+        }
+
+        p{
+            font-size: 18px;
+        }
+
+        .footer{
+            margin-top: 20px;
+            font-size: 16px;
+            color: darkblue;
+            font-weight: bold;
         }
     </style>
 </head>
+
 <body>
+
     <div class="container">
-        <h1>The Power of the Bulb</h1>
-        <form method="POST">
-            {% csrf_token %}
-        <label >Intensity (A):</label>
-        <input type="text" name="intensity" value="{{I}}">
-        
-        <label >Resistance (Ohm):</label>
-        <input type="text" name="resistance" value="{{R}}"><br><br>
-        <input type="submit" value="Calculate"><br><br>
-        <label>Power(watts):</label>
-        <input type="text" name="power" value="{{power}}">
+
+        <h1>GST Bill Calculator</h1>
+
+        <input type="number" id="amount" placeholder="Enter Product Amount">
+
+        <input type="number" id="gst" placeholder="Enter GST Percentage">
+
+        <br><br>
+
+        <button onclick="calculateGST()">Calculate</button>
+
+        <div class="result" id="output">
+
+            <p>GST Amount : ₹ 0</p>
+
+            <p>Total Amount : ₹ 0</p>
+
+        </div>
+
+        <div class="footer">
+            Created By V.B.Laksha
+        </div>
+
     </div>
-</form>        
+
+    <script>
+
+        function calculateGST(){
+
+            let amount = parseFloat(document.getElementById("amount").value);
+
+            let gst = parseFloat(document.getElementById("gst").value);
+
+            let gstAmount = (amount * gst) / 100;
+
+            let total = amount + gstAmount;
+
+            document.getElementById("output").innerHTML = `
+                <p>Original Amount : ₹ ${amount}</p>
+                <p>GST (${gst}%) : ₹ ${gstAmount}</p>
+                <p><strong>Total Amount : ₹ ${total}</strong></p>
+            `;
+        }
+
+    </script>
 
 </body>
 </html>
 ```
-views.py
-
-```
-from django.shortcuts import render
-def power_calculate(request):
-    context = {}
-    context['power'] = ""
-    context['I'] = ""
-    context['R'] = ""  
-
-    if request.method == 'POST':
-
-        I = float(request.POST.get('intensity', '0')) 
-
-        R = float(request.POST.get('resistance', '0')) 
-        
-        power = (I*I)*R
-       
-        context['power'] = f"{ power:.2f}"
-        
-        context['I'] = I
-        
-        context['R'] = R
-        
-        print(f"POST method is used")
-        print(f"request= {request}")
-        print(f"Intensity = {I}")
-        print(f"Resistance = {R}")
-        print(f"Power = {power}")
-       
-      
-    
-    return render(request, 'app1/app.html',context)
-```
-
-urls.py
-
-```
-from django.contrib import admin
-from django.urls import path
-from app1 import views
-urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('powerofbulb/',views.power_calculate,name="powerofbulb"),
-    path('',views.power_calculate,name="powerofbulb")
-]
-
-```
 # SERVER SIDE PROCESSING:
-![alt text](<Screenshot 2024-11-24 152731.png>)
+<img width="1118" height="273" alt="image" src="https://github.com/user-attachments/assets/3d6e654f-bddc-4058-80dc-39e16687c728" />
 # HOMEPAGE:
+<img width="1919" height="1081" alt="Screenshot 2026-05-28 215736" src="https://github.com/user-attachments/assets/a74753eb-e952-4eaf-9b59-8f33edda37f1" />
+<img width="1919" height="1085" alt="Screenshot 2026-05-28 215759" src="https://github.com/user-attachments/assets/9693fed6-119e-42f7-8958-eecd9b4821e0" />
 
-![alt text](<Screenshot 2024-12-01 135320.png>)
 # RESULT:
 The program for performing server side processing is completed successfully.
